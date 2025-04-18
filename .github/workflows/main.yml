@@ -4,4 +4,11 @@ jobs:
   say-hello:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello, Worlds!" 
+      - run: echo "Hello, Worlds!"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - run: ls
+     - uses: actions/checkout@v4.2.2
+     - run: ls
+    
