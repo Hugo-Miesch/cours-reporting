@@ -8,7 +8,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-     - run: ls
      - uses: actions/checkout@v4.2.2
      - run: ls
+     - run: echo "Ce workflow a été trigger sur un événement de type ${{ github.event_name }}"
+     - run: echo " ${{ github.actor }} | Utilisateur ayant déclenché l’action |"
+     - run: echo " ${{ github.sha }} | SHA du commit déclencheur |"
+     - run: echo " ${{ github.workflow }} | Nom du workflow en cours |"
+     - run: echo " ${{ runner.arch }} | Architecture CPU du runner |"
+     - run: echo " ${{ env.HOME }} | Répertoire personnel dans le runner |"
     
