@@ -16,12 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Ce step se lance uniquement si la branche est develop
+      - name: Set build type
+        id: buildtype
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "type=release" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=debug" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build Debug
-        if: github.ref == 'refs/heads/develop'
+        if: steps.buildtype.outputs.type == 'debug'
         run: ./gradlew assembleDebug
 
-      # Ce step se lance uniquement si la branche est main
       - name: Build Release
-        if: github.ref == 'refs/heads/main'
+        if: steps.buildtype.outputs.type == 'release'
         run: ./gradlew assembleRelease
