@@ -8,6 +8,21 @@ on:
       - develop
 
 jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+  
+      - name: "Set up JDK"
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+  
+      - name: "Lancer les test"
+        run: ./gradlew testDebugUnitTest
+
+
   build:
     name: Build and upload to TestApp.io
     runs-on: ubuntu-latest
@@ -15,23 +30,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      # echo "TYPE=Debug" >> $GITHUB_OUTPUT
+      # echo "TYPE=Release" >> $GITHUB_OUTPUT
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Set build type
-        id: buildtype
+      - name: Determiner le type de build
+        id: build-type
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "type=release" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "BUILD_TYPE=Release" >> $GITHUB_OUTPUT
           else
-            echo "type=debug" >> "$GITHUB_OUTPUT"
+            echo "BUILD_TYPE=Debug" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build Debug
-        if: steps.buildtype.outputs.type == 'debug'
+      
+
+      # Ce step doit se lancer si le trigger se fait sur la branche develop
+      - name: Build debug
+        # conditionner ce step
+        if: steps.build-type.outputs.BUILD_TYPE == 'Debug'
         run: ./gradlew assembleDebug
 
+      # Ce step doit se lancer si le trigger se fait sur la branche main
       - name: Build Release
-        if: steps.buildtype.outputs.type == 'release'
+        # conditionner ce step
+        if: steps.build-type.outputs.BUILD_TYPE == 'Release'
         run: ./gradlew assembleRelease
