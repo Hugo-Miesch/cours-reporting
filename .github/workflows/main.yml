@@ -19,7 +19,7 @@ jobs:
       - name: Set build type
         id: buildtype
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          if [ "${{ github.ref_name }}" == "name" ]; then
             echo "type=release" >> "$GITHUB_OUTPUT"
           else
             echo "type=debug" >> "$GITHUB_OUTPUT"
